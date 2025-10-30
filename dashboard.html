@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Librarian Dashboard | LibraryPro</title>
+  <style>
+    /* ===================================
+       🔧 RESET & VARIABLES
+    =================================== */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg-color: #f5f5f5;
+      --text-color: #222;
+      --accent-color: #0077ff;
+      --card-bg: rgba(255, 255, 255, 0.7);
+      --nav-bg: rgba(255, 255, 255, 0.8);
+    }
+
+    body.dark-mode {
+      --bg-color: #121212;
+      --text-color: #eee;
+      --accent-color: #00aaff;
+      --card-bg: rgba(30, 30, 30, 0.6);
+      --nav-bg: rgba(20, 20, 20, 0.9);
+    }
+
+    body {
+      font-family: "Poppins", sans-serif;
+      background: var(--bg-color);
+      color: var(--text-color);
+      transition: background 0.3s, color 0.3s;
+    }
+
+    /* ===================================
+       🧭 NAVBAR
+    =================================== */
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 3rem;
+      background: var(--nav-bg);
+      backdrop-filter: blur(10px);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
+    .logo h1 {
+      font-weight: 600;
+      font-size: 1.6rem;
+    }
+
+    .logo span {
+      color: var(--accent-color);
+    }
+
+    .nav-links {
+      display: flex;
+      list-style: none;
+      gap: 1.5rem;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: var(--text-color);
+      font-weight: 500;
+      transition: color 0.3s;
+    }
+
+    .nav-links a:hover,
+    .nav-links .active {
+      color: var(--accent-color);
+    }
+
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 4px;
+      background: none;
+      border: none;
+      cursor: pointer;
+    }
+
+    .hamburger span {
+      width: 25px;
+      height: 3px;
+      background: var(--text-color);
+      border-radius: 2px;
+    }
+
+    /* ===================================
+       🧭 LIBRARIAN DASHBOARD PAGE
+    =================================== */
+    .dashboard {
+      display: flex;
+      min-height: 80vh;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 250px;
+      background: var(--nav-bg);
+      padding: 2rem 1.5rem;
+      border-right: 1px solid rgba(0, 0, 0, 0.1);
+    }
+
+    .sidebar h2 {
+      font-size: 1.3rem;
+      color: var(--accent-color);
+      margin-bottom: 1.5rem;
+    }
+
+    .sidebar ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+    }
+
+    .sidebar ul a {
+      text-decoration: none;
+      color: var(--text-color);
+      font-weight: 500;
+      display: block;
+      padding: 0.5rem 0.8rem;
+      border-radius: 8px;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    .sidebar ul a:hover,
+    .sidebar ul a.active {
+      background: var(--accent-color);
+      color: #fff;
+    }
+
+    /* Main Content */
+    .dashboard-content {
+      flex: 1;
+      padding: 2.5rem;
+    }
+
+    .dashboard-content h2 {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .dashboard-content .subtext {
+      opacity: 0.8;
+      margin-bottom: 2rem;
+    }
+
+    /* Stats Grid */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 3rem;
+    }
+
+    .stat-card {
+      background: var(--card-bg);
+      padding: 2rem;
+      border-radius: 12px;
+      text-align: center;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-8px);
+    }
+
+    .stat-card h3 {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .stat-card .count {
+      font-size: 1.8rem;
+      font-weight: 600;
+      color: var(--accent-color);
+    }
+
+    .stat-card span {
+      display: block;
+      opacity: 0.8;
+      font-size: 0.95rem;
+    }
+
+    /* Activity Table */
+    .activity-section h3 {
+      margin-bottom: 1rem;
+    }
+
+    .activity-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--card-bg);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .activity-table th,
+    .activity-table td {
+      padding: 1rem;
+      text-align: left;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    }
+
+    .activity-table th {
+      background: var(--accent-color);
+      color: #fff;
+    }
+
+    .status {
+      padding: 0.3rem 0.8rem;
+      border-radius: 6px;
+      font-weight: 500;
+      font-size: 0.85rem;
+    }
+
+    .status.borrowed {
+      background: #0077ff33;
+      color: var(--accent-color);
+    }
+
+    .status.returned {
+      background: #00c85333;
+      color: #00c853;
+    }
+
+    .status.overdue {
+      background: #ff525233;
+      color: #ff5252;
+    }
+
+    /* Footer */
+    footer {
+      background: var(--nav-bg);
+      text-align: center;
+      padding: 1rem;
+      margin-top: 3rem;
+      font-size: 0.9rem;
+    }
+
+    /* Responsive Dashboard */
+    @media (max-width: 900px) {
+      .dashboard {
+        flex-direction: column;
+      }
+
+      .sidebar {
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        display: flex;
+        overflow-x: auto;
+      }
+
+      .sidebar ul {
+        flex-direction: row;
+        gap: 1rem;
+      }
+
+      .sidebar h2 {
+        display: none;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .nav-links {
+        display: none;
+        flex-direction: column;
+        position: absolute;
+        top: 70px;
+        right: 0;
+        background: var(--nav-bg);
+        width: 200px;
+        border-radius: 8px;
+        padding: 1rem;
+      }
+      .nav-links.active {
+        display: flex;
+      }
+      .hamburger {
+        display: flex;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Navbar -->
+  <header class="header">
+    <nav class="navbar">
+      <div class="logo">
+        <h1>📚 Library<span>Pro</span></h1>
+      </div>
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="books.html">View Books</a></li>
+        <li><a href="add_book.html">Add Book</a></li>
+        <li><a href="#" class="active">Dashboard</a></li>
+        <li><a href="#">Logout</a></li>
+      </ul>
+
+      <div class="nav-actions">
+        <button id="theme-toggle" aria-label="Toggle dark mode">🌙</button>
+        <button class="hamburger" aria-label="Toggle menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Dashboard -->
+  <main class="dashboard">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <h2>Admin Panel</h2>
+      <ul>
+        <li><a href="#" class="active">📊 Overview</a></li>
+        <li><a href="#">📚 Manage Books</a></li>
+        <li><a href="#">👥 Members</a></li>
+        <li><a href="#">📈 Reports</a></li>
+        <li><a href="#">⚙️ Settings</a></li>
+      </ul>
+    </aside>
+
+    <!-- Content -->
+    <section class="dashboard-content">
+      <h2>Welcome, Librarian 👋</h2>
+      <p class="subtext">Here’s an overview of your library’s current activity.</p>
+
+      <!-- Stats -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <h3>📚</h3>
+          <p class="count">1,245</p>
+          <span>Total Books</span>
+        </div>
+        <div class="stat-card">
+          <h3>👥</h3>
+          <p class="count">320</p>
+          <span>Active Members</span>
+        </div>
+        <div class="stat-card">
+          <h3>📖</h3>
+          <p class="count">85</p>
+          <span>Books Borrowed</span>
+        </div>
+        <div class="stat-card">
+          <h3>⏰</h3>
+          <p class="count">12</p>
+          <span>Overdue</span>
+        </div>
+      </div>
+
+      <!-- Activity Table -->
+      <div class="activity-section">
+        <h3>📅 Recent Activity</h3>
+        <table class="activity-table">
+          <thead>
+            <tr>
+              <th>Member</th>
+              <th>Book Title</th>
+              <th>Date Borrowed</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>John Doe</td>
+              <td>Atomic Habits</td>
+              <td>Oct 15, 2025</td>
+              <td><span class="status borrowed">Borrowed</span></td>
+            </tr>
+            <tr>
+              <td>Mary Jane</td>
+              <td>The Great Gatsby</td>
+              <td>Oct 10, 2025</td>
+              <td><span class="status returned">Returned</span></td>
+            </tr>
+            <tr>
+              <td>Alex Carter</td>
+              <td>1984</td>
+              <td>Sep 30, 2025</td>
+              <td><span class="status overdue">Overdue</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <p>&copy; <span id="year"></span> LibraryPro — All rights reserved.</p>
+  </footer>
+
+  <script>
+    // 🌙 Theme Toggle
+    const themeToggle = document.getElementById("theme-toggle");
+    themeToggle.addEventListener("click", () => {
+      document.body.classList.toggle("dark-mode");
+      themeToggle.textContent = document.body.classList.contains("dark-mode") ? "☀️" : "🌙";
+    });
+
+    // 🍔 Hamburger Menu
+    const hamburger = document.querySelector(".hamburger");
+    const navLinks = document.querySelector(".nav-links");
+    hamburger.addEventListener("click", () => {
+      navLinks.classList.toggle("active");
+    });
+
+    // 📅 Auto Year
+    document.getElementById("year").textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>

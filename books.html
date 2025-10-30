@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>View Books | Library Management System</title>
+  <link rel="stylesheet" href="style.css">
+  <script defer src="books.js"></script>
+</head>
+<body>
+  <header class="header">
+    <nav class="navbar">
+      <div class="logo">
+        <h1>📚 Library<span>Pro</span></h1>
+      </div>
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="books.html" class="active">View Books</a></li>
+        <li><a href="add_book.html">Add Book</a></li>
+        <li><a href="login.html">Login</a></li>
+        <li><a href="register.html">Register</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main class="books-page">
+    <section class="search-section">
+      <h2>Browse Our Library</h2>
+      <div class="filters">
+        <input type="text" id="searchInput" placeholder="🔍 Search by title, author, or category...">
+        <select id="categoryFilter">
+          <option value="all">All Categories</option>
+          <option value="fiction">Fiction</option>
+          <option value="non-fiction">Non-Fiction</option>
+          <option value="science">Science</option>
+          <option value="technology">Technology</option>
+          <option value="history">History</option>
+        </select>
+      </div>
+    </section>
+
+    <section class="books-container" id="booksContainer">
+      <!-- Books will be displayed dynamically -->
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; <span id="year"></span> LibraryPro — All rights reserved.</p>
+  </footer>
+</body>
+</html>
